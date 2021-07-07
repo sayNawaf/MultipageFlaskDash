@@ -22,10 +22,10 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 df = pd.DataFrame()
 
 #app = dash.Dash(__name__,external_stylesheets = [dbc.themes.BOOTSTRAP])
-Hemavathi = r"C:\Users\sayna\project\Dash\dash_packages\Datasets\proccessed_Hemavathi32"
-KSR = r"C:\Users\sayna\project\Dash\dash_packages\Datasets\proccessed_KRS32"
-Harangi = r"C:\Users\sayna\project\Dash\dash_packages\Datasets\proccessed_HARANGI32"
-Kabini = r"C:\Users\sayna\project\Dash\dash_packages\Datasets\proccessed_kabinii32"
+Hemavathi = "dash_packages\Datasets\proccessed_Hemavathi32"
+KSR = "dash_packages\Datasets\proccessed_KRS32"
+Harangi = "dash_packages\Datasets\proccessed_HARANGI32"
+Kabini = 'dash_packages\Datasets\proccessed_kabinii32'
 colors = {
     'background': '#192444',
     'text': '#7FDBFF',
