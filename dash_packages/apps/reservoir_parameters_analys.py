@@ -20,6 +20,7 @@ from dash_packages import app
 
 # Data from NYC Open Data portal
 KSR = r"C:\Users\sayna\project\Dash\dash_packages\Datasets\proccessed_KRS32"
+
 df = pd.read_csv(KSR)
 
 df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
