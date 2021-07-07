@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from dash_packages import app
-from dash_packages import server
+
 from dash_packages.routes import *
 # Connect to main app.py file
 
