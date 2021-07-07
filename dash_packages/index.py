@@ -31,7 +31,7 @@ def display_page(pathname):
     if pathname == '/apps/reservoir_data_analys':
         return reservoir_data_analys.layout
     else:
-        return hello()
+        return "404"
 
 if __name__ == "__main__":
     app.run_server(debug = True)
