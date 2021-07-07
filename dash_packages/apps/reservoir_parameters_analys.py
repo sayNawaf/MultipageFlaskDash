@@ -17,11 +17,13 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import dash_bootstrap_components as dbc
 from dash_packages import app
+import pathlib
 
 # Data from NYC Open Data portal
-KSR = "dash_packages\Datasets\proccessed_KRS32"
-
-df = pd.read_csv(KSR)
+PATH = pathlib.Path(__file__).parent
+DATA_PATH = PATH.joinpath("../Datasets").resolve()
+KSR = "proccessed_KRS32"
+df = pd.read_csv(DATA_PATH.joinpath(KSR))
 
 df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
 df.set_index('SUBMIT_DATE', inplace=True)

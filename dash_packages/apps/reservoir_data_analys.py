@@ -16,16 +16,19 @@ import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import dash_bootstrap_components as dbc
+import pathlib
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 df = pd.DataFrame()
 
 #app = dash.Dash(__name__,external_stylesheets = [dbc.themes.BOOTSTRAP])dash_packages\apps\proccessed_HARANGI32
-Hemavathi = 'dash_packages\Datasets\proccessed_Hemavathi32'
-KSR = "dash_packages\Datasets\proccessed_KRS32"
-Harangi = "dash_packages\Datasets\proccessed_HARANGI32"
-Kabini = 'dash_packages\Datasets\proccessed_kabinii32'
+Hemavathi = 'proccessed_Hemavathi32'
+KSR = "proccessed_KRS32"
+Harangi = "proccessed_HARANGI32"
+Kabini = 'proccessed_kabinii32'
+PATH = pathlib.Path(__file__).parent
+DATA_PATH = PATH.joinpath("../Datasets").resolve()
 colors = {
     'background': '#192444',
     'text': '#7FDBFF',
@@ -261,7 +264,7 @@ def update_val(dataframe,start_date,end_date):
                     shared_xaxes=True,
                     vertical_spacing=0.03)
     for no,variable in enumerate(dataframe):
-        df = pd.read_csv(variable)
+        df = pd.read_csv(DATA_PATH.joinpath(variable))
         df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
         df.set_index('SUBMIT_DATE', inplace=True)
         df = df.loc[start_date:end_date]
@@ -308,8 +311,8 @@ def dat(no):
 )
 def update_val(top, metric, df, start_date, end_date):
     
-    df = pd.read_csv(df)
     
+    df = pd.read_csv(DATA_PATH.joinpath(df))
     df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
     df.set_index('SUBMIT_DATE', inplace=True)
     df = df[start_date:end_date]
