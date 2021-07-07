@@ -5,7 +5,7 @@ from dash_packages.index import app
 @app.server.route("/1")
 def hello():
     print("nawaf")
-    return "joke"
+    return "jokes"
 
 
 @app.server.route("/dashboard")
