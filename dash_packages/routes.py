@@ -2,7 +2,7 @@
 from dash_packages.index import app
 # from dash_packages.reservoir_visualization import app2
 
-@app.server.route("/1")
+@app.server.route("/")
 def hello():
     print("nawaf")
     return "jokes"
