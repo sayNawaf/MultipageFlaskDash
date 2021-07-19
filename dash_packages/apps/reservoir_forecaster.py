@@ -28,6 +28,11 @@ Hemavathi = 'appended_HEMAVATHY'
 KSR = "appended_KRS"
 Harangi = "appended_HARANGI"
 Kabini = 'appended_KABINI'
+res_dict = { 'appended_HEMAVATHY':"Hemavathy",
+"appended_KRS":"KSR",
+"appended_HARANGI":"Harangi",
+'appended_KABINI':"Kabini",
+"all_res":"All reservoirs Combined" }
 
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../Datasets").resolve()
@@ -72,10 +77,10 @@ card1 = dbc.Card([
         clearable=True,  # whether or not the user can clear the dropdown
         number_of_months_shown=1,  # number of months shown when calendar is open
         min_date_allowed=dt(2014, 1, 1),  # minimum date allowed on the DatePickerRange component
-        max_date_allowed=dt(2021, 12, 16),  # maximum date allowed on the DatePickerRange component
+        max_date_allowed=dt(2021, 3, 6),  # maximum date allowed on the DatePickerRange component
         initial_visible_month=dt(2020, 5, 1),  # the month initially presented when the user opens the calendar
-        start_date=dt(2020, 12, 16).date(),
-        end_date=dt(2021, 3, 16).date(),
+        start_date=dt(2020, 12, 6).date(),
+        end_date=dt(2021, 3, 6).date(),
         display_format='MMM Do, YY',  # how selected dates are displayed in the DatePickerRange component.
         month_format='MMMM, YYYY',  # how calendar headers are displayed when the calendar is opened.
         minimum_nights=2,  # minimum number of days between start and end date
@@ -259,7 +264,7 @@ def update(dataframe,start_date,end_date):
                         row=no+1, col=1)
     
     for no,variable in enumerate(dataframe):
-        fig.update_yaxes(title_text=variable, row=no+1, col=1,color = 'white')
+        fig.update_yaxes(title_text=res_dict[variable], row=no+1, col=1,color = 'white')
     
     fig.update_xaxes(title_text="DATE", row=len(dataframe), col=1,color = 'white' )
     fig.update_layout(height=1000, width=1800, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"] )
@@ -288,7 +293,6 @@ def update(dataframe,start_date,end_date):
     [Input("table21",'selected_rows'),
     Input("my-date-picker-range",'start_date'),
     Input("my-date-picker-range",'end_date')]
-
 )
 def val_update(id,start_date,end_date):
     id=id[0]
@@ -326,7 +330,7 @@ def val_update(id,start_date,end_date):
     barChart.update_yaxes( color = 'white')
     barChart.update_xaxes(color = 'white' )
     barChart.update_layout(height=700, width=1100, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"] )
-    text = f"Total RESERVOIR WATER LEVEL on {date} is {res_lvl}, \n Total WATER LEVEL DEPLETED\GAIN on {date} is {dep_lvl} \n KSR DEP\GAIN in water lvl(ft) :-{KSR_wtr},\n HEMAVATHY DEP\GAIN in water lvl(ft) :-{Hemavathy_wtr},\n HARANGI DEP\GAIN in Water lvl(ft) :-{Harangi_wtr},\n KABINI DEP\GAIN in Water lvl(ft) :-{kabini_wtr}"
+    text = f"Total RESERVOIR WATER LEVEL on {date} is {res_lvl}, \n Total WATER LEVEL DEPLETED\GAIN on {date} is {dep_lvl} \n KSR DEP\GAIN in water lvl(ft) :{KSR_wtr},\n HEMAVATHY DEP\GAIN in water lvl(ft) :{Hemavathy_wtr},\n HARANGI DEP\GAIN in Water lvl(ft) :{Harangi_wtr},\n KABINI DEP\GAIN in Water lvl(ft) :{kabini_wtr}"
     print(text)
     return text,barChart
 
@@ -376,6 +380,6 @@ def val_update(id,start_date,end_date):
     barChart.update_yaxes( color = 'white')
     barChart.update_xaxes(color = 'white' )
     barChart.update_layout(height=700, width=1100, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"] )
-    text = f"Total RESERVOIR WATER LEVEL on {date} is {res_lvl}, \n Total WATER LEVEL DEPLETED\GAIN on {date} is {dep_lvl} \n KSR water lvl(ft) :-{KSR_wtr},\n HEMAVATHY water lvl(ft) :-{Hemavathy_wtr},\n HARANGI Water lvl(ft) :-{Harangi_wtr},\n KABINI Water lvl(ft) :-{kabini_wtr}"
+    text = f"Total RESERVOIR WATER LEVEL on {date} is {res_lvl}, \n Total WATER LEVEL DEPLETED\GAIN on {date} is {dep_lvl} \n KSR water lvl(ft) :{KSR_wtr},\n HEMAVATHY water lvl(ft) :{Hemavathy_wtr},\n HARANGI Water lvl(ft) :{Harangi_wtr},\n KABINI Water lvl(ft) :{kabini_wtr}"
     print(text)
     return text,barChart

@@ -23,11 +23,19 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 df = pd.DataFrame()
 
 #app = dash.Dash(__name__,external_stylesheets = [dbc.themes.BOOTSTRAP])dash_packages\apps\proccessed_HARANGI32
-Hemavathi = 'proccessed_Hemavathi32'
-KSR = "proccessed_KRS33"
-Harangi = "proccessed_HARANGI32"
-Kabini = 'proccessed_kabinii32'
+
+Hemavathi = 'appended_HEMAVATHY'
+KSR = "appended_KRS"
+Harangi = "appended_HARANGI"
+Kabini = 'appended_KABINI'
 all_reservoirs = 'all_res_merged'
+
+res_dict = { 'appended_HEMAVATHY':"Hemavathy",
+"appended_KRS":"KSR",
+"appended_HARANGI":"Harangi",
+'appended_KABINI':"Kabini",
+'all_res_merged':"All reservoirs" }
+
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../Datasets").resolve()
 colors = {
@@ -65,7 +73,7 @@ card1 = dbc.Card([
         clearable=True,  # whether or not the user can clear the dropdown
         number_of_months_shown=1,  # number of months shown when calendar is open
         min_date_allowed=dt(2014, 1, 1),  # minimum date allowed on the DatePickerRange component
-        max_date_allowed=dt(2020, 12, 16),  # maximum date allowed on the DatePickerRange component
+        max_date_allowed=dt(2021, 12, 6),  # maximum date allowed on the DatePickerRange component
         initial_visible_month=dt(2020, 5, 1),  # the month initially presented when the user opens the calendar
         start_date=dt(2018, 8, 7).date(),
         end_date=dt(2020, 12, 16).date(),
@@ -391,6 +399,7 @@ def update_val(dataframe,start_date,end_date):
                     vertical_spacing=0.03)
     for no,variable in enumerate(dataframe):
         df = pd.read_csv(DATA_PATH.joinpath(variable))
+        
         df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
         df.set_index('SUBMIT_DATE', inplace=True)
         df = df.loc[start_date:end_date]
@@ -400,7 +409,7 @@ def update_val(dataframe,start_date,end_date):
                         row=no+1, col=1)
     
     for no,variable in enumerate(dataframe):
-        fig.update_yaxes(title_text=variable, row=no+1, col=1,color = 'white')
+        fig.update_yaxes(title_text=res_dict[variable], row=no+1, col=1,color = 'white')
     
     fig.update_xaxes(title_text="DATE", row=len(dataframe), col=1,color = 'white' )
     fig.update_layout(height=800, width=1800, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"] )
@@ -438,6 +447,7 @@ def update_val(top, metric, df, start_date, end_date):
     
     
     df = pd.read_csv(DATA_PATH.joinpath(df))
+    df = df.round(3)
     df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
     df.set_index('SUBMIT_DATE', inplace=True)
     df = df[start_date:end_date]
@@ -521,24 +531,28 @@ def update_vals(outputType, metric, df_name, start_date, end_date):
     if df_name == "all_res_merged":
         print(df_name)
         df1 = pd.read_csv(DATA_PATH.joinpath('proccessed_kabinii32'))
+        df1= df1.round(3)
         df1['SUBMIT_DATE'] = pd.to_datetime(df1['DATE'])
         df1.set_index('SUBMIT_DATE', inplace=True)
         df1 = df1[start_date:end_date]
         df1["Reservoir"] = "Kabini"
 
         df2 = pd.read_csv(DATA_PATH.joinpath("proccessed_KRS33"))
+        df2= df1.round(3)
         df2['SUBMIT_DATE'] = pd.to_datetime(df2['DATE'])
         df2.set_index('SUBMIT_DATE', inplace=True)
         df2 = df2[start_date:end_date]
         df2["Reservoir"] = "KSR"
 
         df3 = pd.read_csv(DATA_PATH.joinpath('proccessed_HARANGI32'))
+        df3= df1.round(3)
         df3['SUBMIT_DATE'] = pd.to_datetime(df3['DATE'])
         df3.set_index('SUBMIT_DATE', inplace=True)
         df3 = df3[start_date:end_date]
         df3["Reservoir"] = "Harangi"
 
         df4 = pd.read_csv(DATA_PATH.joinpath('proccessed_Hemavathi32'))
+        df4= df1.round(3)
         df4['SUBMIT_DATE'] = pd.to_datetime(df4['DATE'])
         df4.set_index('SUBMIT_DATE', inplace=True)
         df4 = df4[start_date:end_date]

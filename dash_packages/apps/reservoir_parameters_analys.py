@@ -22,13 +22,19 @@ import pathlib
 # Data from NYC Open Data portal
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../Datasets").resolve()
-KSR = "proccessed_KRS33"
+All_combined = "all_res"
+Hemavathi = 'appended_HEMAVATHY'
+KSR = "appended_KRS"
+Harangi = "appended_HARANGI"
+Kabini = 'appended_KABINI'
 df = pd.read_csv(DATA_PATH.joinpath(KSR))
 
 df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
 df.set_index('SUBMIT_DATE', inplace=True)
-df1 = df[['T2M_MAX','T2M',"PS",'T2M_MIN_x','OUTFLOW_CUECS','INFLOW_CUSECS',"WS50M_MIN","MO",'QV2M','RH2M','PRECTOT','PRESENT_STORAGE_TMC','RES_LEVEL_FT']]
-d = {"Correlation wrt res_lvl": list(df1.corr()['RES_LEVEL_FT'].sort_values(ascending=False)[1:].values),"Parameters":list(df1.corr()['RES_LEVEL_FT'].sort_values(ascending=False)[1:].index)}                                                               
+print(df.columns)
+df = df.drop(["DATE"],axis =1)
+#df1 = df[['T2M_MAX','T2M',"PS",'T2M_MIN_x','OUTFLOW_CUECS','INFLOW_CUSECS',"WS50M_MIN","MO",'QV2M','RH2M','PRECTOT','PRESENT_STORAGE_TMC','RES_LEVEL_FT']]
+d = {"Correlation wrt res_lvl": list(df.corr()['RES_LEVEL_FT'].sort_values(ascending=False)[1:].values),"Parameters":list(df.corr()['RES_LEVEL_FT'].sort_values(ascending=False)[1:].index)}                                                               
 dff = pd.DataFrame(d) 
 # print(dff)
 # print(df[:5][['BUSINESS_NAME', 'LATITUDE', 'LONGITUDE', 'APP_SQ_FT']])
@@ -50,7 +56,7 @@ card1 = dbc.Card([
 
     dbc.Row(
         dbc.Col(
-    html.H1("Historical Data Analysis", className = "text-center  mb-3",style={ 'color': 'white'}),
+    html.H1("Historical Data Analysis", className = "text-center  mb-3",style={'font-weight': 'bold', "text-align": "center","color":"white",'fontSize': 50}),
     width = 12),
     justify = "center"),
 
@@ -71,9 +77,9 @@ card1 = dbc.Card([
         reopen_calendar_on_clear=True,
         is_RTL=False,  # True or False for direction of calendar
         clearable=True,  # whether or not the user can clear the dropdown
-        number_of_months_shown=1,  # number of months shown when calendar is open
+        number_of_months_shown=2,  # number of months shown when calendar is open
         min_date_allowed=dt(2014, 1, 1),  # minimum date allowed on the DatePickerRange component
-        max_date_allowed=dt(2020, 12, 16),  # maximum date allowed on the DatePickerRange component
+        max_date_allowed=dt(2021, 3, 6),  # maximum date allowed on the DatePickerRange component
         initial_visible_month=dt(2020, 5, 1),  # the month initially presented when the user opens the calendar
         start_date=dt(2018, 8, 7).date(),
         end_date=dt(2020, 12, 16).date(),
@@ -92,11 +98,25 @@ card1 = dbc.Card([
     
         dbc.Col([
             html.Label(['Select Water Level Dependancies:'],style={'font-weight': 'bold', "text-align": "center","color":"white"}),
-    dcc.Dropdown(id='dpdn1', value=["RES_LEVEL_FT"], multi=True,
-                 options=[{'label': x, 'value': x} for x in
-                          df.columns],                          style={'backgroundColor': 'white', 'color': 'black'},
+    dcc.Dropdown(id='dpdn1',value = [], multi=True,
+                 options=[],        
+                 placeholder = "Select a variable",               style={'backgroundColor': 'white', 'color': 'black'},
                           className = "dropdown"
                           )],width = 6
+        ),
+
+        dbc.Col([
+            html.Label(['Select Reservoirs:'],style={'font-weight': 'bold', "text-align": "center","color":"white"}),
+       
+    dcc.Dropdown(id='dpdn2', value=KSR, multi=False,
+                 options=[
+                     {'label': "KSR", 'value': KSR},
+                          {'label': "Hemavati", 'value': Hemavathi},
+                          {'label': "Harangi", 'value': Harangi },  
+                          {'label': "Kabini", 'value': Kabini}],                          style={'backgroundColor': 'white', 'color': 'black'},
+                          className = "dropdown"
+                          ),
+                          html.Br()],width = 2
         ),
     
         
@@ -198,7 +218,7 @@ layout = html.Div( style={'backgroundColor': colors['background']},children = [d
     dbc.Row(
     [
         dbc.Col(card2,
-         width=8),
+         width=7),
         dbc.Col([
             dbc.Row([
                 card3
@@ -208,27 +228,42 @@ layout = html.Div( style={'backgroundColor': colors['background']},children = [d
             dbc.Row([
                 card4
             ],justify = "center")
-        ],width = 3)
+        ],width = 5)
         
     ],justify = "center"),
 
 
 ],fluid = True)])
 
+@app.callback(
+    Output('dpdn1','options'),
+    Output('dpdn1','value'),
+    Input('dpdn2','value')
+)
+def update_variables(reservoir):
+    df = pd.read_csv(DATA_PATH.joinpath(reservoir))
+    df = df.drop(["Unnamed: 0"],axis = 1)
+    return [{'label': x, 'value': x} for x in
+                          df.columns],"RES_LEVEL_FT"
+
 
 @app.callback(
     Output("line-chart1", "figure"),
     [Input('my-date-picker-range', 'start_date'),
      Input('my-date-picker-range', 'end_date'),
-     Input('dpdn1','value')]
+     Input('dpdn1','value'),
+     Input('dpdn2','value')]
 
 )
-def update_output(start_date, end_date, variables):
+def update_output(start_date, end_date, variables, reservoir):
 
     print("Start date: " + start_date)
     print("End date: " + end_date)
 
-    
+    df = pd.read_csv(DATA_PATH.joinpath(reservoir))
+
+    df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
+    df.set_index('SUBMIT_DATE', inplace=True)
     dff = df.loc[start_date:end_date]
     fig = make_subplots(rows=len(variables), cols=1,
                     shared_xaxes=True,
@@ -250,34 +285,41 @@ def update_output(start_date, end_date, variables):
 
 
 
+def year(strr):
+    return strr.year
 
 @app.callback(
     Output("bar_chart", "figure"),
     Output("heatmap", "figure"),
     Output("table","data"),
-    [Input("my-range-slider","value")]
+    [Input("my-range-slider","value"),
+    Input('dpdn2','value')]
 )
-def update_output(value):
+def update_output(value, reservoir):
     start_year = value[0]
     end_year = value[1]
+    df1 = pd.read_csv(DATA_PATH.joinpath(reservoir))
+    df1 = df1.round(3)
+    df1["DATE"] = pd.to_datetime(df1["DATE"])
+    df1["year"] = df1["DATE"].apply(year)
+    df1 = df1.drop(["Unnamed: 0"],axis = 1)
+    df1 = df1[(df1["year"] >=start_year) & (df1["year"] <= end_year)]
     
-    df1 = df[(df["YEAR_x"] >=start_year) & (df["YEAR_x"] <= end_year)]
-    
-    df1 = df1[["PS",'T2M_MIN','OUTFLOW_CUECS','INFLOW_CUSECS',"WS50M_MIN",'QV2M','RH2M','PRECTOT','RES_LEVEL_FT','PRESENT_STORAGE_TMC',"MO"]]
+    df1 = df1.drop(["DATE"],axis = 1)
     fig3 = px.bar(x = df1.corr()['RES_LEVEL_FT'].abs().sort_values(ascending = False)[1:].index,y = df1.corr()['RES_LEVEL_FT'].abs().sort_values(ascending = False)[1:].values)
     fig3.update_layout(
         
     title = "Parameters correlation wrt Res water level",
     xaxis_title="Parameters",
     yaxis_title="Correlation",
-    height=700, width=500, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"],font_color="white",),
+    height=700, width=800, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"],font_color="white",),
     fig3.update_xaxes(color = 'white'  ),
     fig3.update_yaxes(color = 'white'  )
     
 
     heatmap = px.imshow(df1.corr())
     heatmap.update_layout(
-        height=1100, width=1400, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"],font_color="white",
+        height=1300, width=1200, plot_bgcolor = colors["card"],paper_bgcolor = colors["card"],font_color="white",
     )
     heatmap.update_xaxes(color = 'white'  ),
     heatmap.update_yaxes(color = 'white'  )
