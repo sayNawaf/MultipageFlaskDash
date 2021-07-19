@@ -22,12 +22,12 @@ import pathlib
 # Data from NYC Open Data portal
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../Datasets").resolve()
-KSR = "proccessed_KRS32"
+KSR = "proccessed_KRS33"
 df = pd.read_csv(DATA_PATH.joinpath(KSR))
 
 df['SUBMIT_DATE'] = pd.to_datetime(df['DATE'])
 df.set_index('SUBMIT_DATE', inplace=True)
-df1 = df[["PS",'T2M_MIN','OUTFLOW_CUECS','INFLOW_CUSECS',"WS50M_MIN",'QV2M','RH2M','PRECTOT','RES_LEVEL_FT','PRESENT_STORAGE_TMC',"YEAR","MO"]]
+df1 = df[['T2M_MAX','T2M',"PS",'T2M_MIN_x','OUTFLOW_CUECS','INFLOW_CUSECS',"WS50M_MIN","MO",'QV2M','RH2M','PRECTOT','PRESENT_STORAGE_TMC','RES_LEVEL_FT']]
 d = {"Correlation wrt res_lvl": list(df1.corr()['RES_LEVEL_FT'].sort_values(ascending=False)[1:].values),"Parameters":list(df1.corr()['RES_LEVEL_FT'].sort_values(ascending=False)[1:].index)}                                                               
 dff = pd.DataFrame(d) 
 # print(dff)
@@ -116,82 +116,6 @@ html.Br(),
 ],
 color = colors["card"]),
 
-# card = dbc.Card([
-#     html.Br(),
-#     html.Br(),
-
-#     dbc.Row(
-#         dbc.Col(
-#     html.H1("DATES PERFOMANCE ANALYSIS", className = "text-center  mb-3",style={ 'color': 'white'}),
-#     width = 12),
-#     justify = "center"
-#     ),
-
-#     html.Br(),
-#     html.Br(),
-#     dbc.Row([
-#         dbc.Col([
-
-            
-#         html.Br(),
-#         dcc.DatePickerRange(
-#         id='my-date-picker-range2',  # ID to be used for callback
-#         calendar_orientation='horizontal',  # vertical or horizontal
-#         day_size=39,  # size of calendar image. Default is 39
-#         end_date_placeholder_text="Return",  # text that appears when no end date chosen
-#         with_portal=False,  # if True calendar will open in a full screen overlay portal
-#         first_day_of_week=0,  # Display of calendar when open (0 = Sunday)
-#         reopen_calendar_on_clear=True,
-#         is_RTL=False,  # True or False for direction of calendar
-#         clearable=True,  # whether or not the user can clear the dropdown
-#         number_of_months_shown=1,  # number of months shown when calendar is open
-#         min_date_allowed=dt(2014, 1, 1),  # minimum date allowed on the DatePickerRange component
-#         max_date_allowed=dt(2020, 12, 16),  # maximum date allowed on the DatePickerRange component
-#         initial_visible_month=dt(2020, 5, 1),  # the month initially presented when the user opens the calendar
-#         start_date=dt(2018, 8, 7).date(),
-#         end_date=dt(2020, 12, 16).date(),
-#         display_format='MMM Do, YY',  # how selected dates are displayed in the DatePickerRange component.
-#         month_format='MMMM, YYYY',  # how calendar headers are displayed when the calendar is opened.
-#         minimum_nights=2,  # minimum number of days between start and end date
-#         persistence=True,
-#         persisted_props=['start_date'],
-#         persistence_type='session',  # session, local, or memory. Default is 'local'
-
-#         updatemode='singledate',
-#         style={'backgroundColor': '#192444', 'color': '#192444'},
-#          # singledate or bothdates. Determines when callback is triggered
-#         )],width = {"size":2,"offset":1}
-#         ),
-
-#     dbc.Col([
-#         html.Label(['Select Output Type:'],style={'font-weight': 'bold', "text-align": "center","color":"white"}),
-        
-#     dcc.Dropdown(id='dpdn2', value=["WEEKDAYs"], multi=False,
-#                  options=[{'label': 'WEEKDAYs', 'value': 'WEEKDAY'},
-#                         {'label': 'DATES', 'value': "DATES"}
-#                           ],
-#                           style={'backgroundColor': 'white', 'color': 'black'},
-#                           className = "dropdown"
-#                 )],width = 3),
-#     dbc.Col([
-#         html.Label(['Perfomance With Respect To:'],style={'font-weight': 'bold', "text-align": "center","color":"white"}),
-        
-#     dcc.Dropdown(id='dpdn3', value=["Maximum Water Level"], multi=False,
-#                  options=[{'label': 'Maximum Water Level', 'value': 'MAXwaterlvl'},
-#                         {'label': 'Least Water Level', 'value': "LEASTwaterlvl"},
-#                         {'label': 'Highest  Water Depletion', 'value': "HIGHwaterdep"},
-#                         {'label': 'Least Water Depletion', 'value': "LEASTwaterdep"},
-#                           ],
-#                           style={'backgroundColor': 'white', 'color': 'black'},
-#                           className = "dropdown"
-#                 )],width = 3)
-#     ],justify = 'start'),
-
-
-#     html.Br(),
-
-
-# ],color = colors["card"]),
 
 card2 = dbc.Card([
             dcc.Graph(id="heatmap")
@@ -336,8 +260,8 @@ def update_output(start_date, end_date, variables):
 def update_output(value):
     start_year = value[0]
     end_year = value[1]
-
-    df1 = df[(df["YEAR"] >=start_year) & (df["YEAR"] <= end_year)]
+    
+    df1 = df[(df["YEAR_x"] >=start_year) & (df["YEAR_x"] <= end_year)]
     
     df1 = df1[["PS",'T2M_MIN','OUTFLOW_CUECS','INFLOW_CUSECS',"WS50M_MIN",'QV2M','RH2M','PRECTOT','RES_LEVEL_FT','PRESENT_STORAGE_TMC',"MO"]]
     fig3 = px.bar(x = df1.corr()['RES_LEVEL_FT'].abs().sort_values(ascending = False)[1:].index,y = df1.corr()['RES_LEVEL_FT'].abs().sort_values(ascending = False)[1:].values)

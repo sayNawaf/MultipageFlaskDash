@@ -19,3 +19,7 @@ def dashboard2():
 @app.server.route('/apps/reservoir_data_analys')
 def dashboard3():
     return app.index()
+
+@app.server.route('/apps/reservoir_forecaster')
+def dashboard4():
+    return app.index()

@@ -8,7 +8,7 @@ from dash_packages.routes import *
 
 
 # Connect to your app pages
-from dash_packages.apps import reservoir_parameters_analys, reservoir_data_analys
+from dash_packages.apps import reservoir_parameters_analys, reservoir_data_analys,reservoir_forecaster
 
 
 app.layout = html.Div([
@@ -16,6 +16,7 @@ app.layout = html.Div([
     html.Div([
         dcc.Link('reservoir parameter analys|', href='/apps/reservoir_parameters_analys'),
         dcc.Link('reservoir data analys|', href='/apps/reservoir_data_analys'),
+        dcc.Link('reservoir forecaster|', href='/apps/reservoir_forecaster'),
         dcc.Link('Homepage', href='http://127.0.0.1:8050/1',refresh = True),
         
     ], className="row"),
@@ -30,6 +31,8 @@ def display_page(pathname):
         return reservoir_parameters_analys.layout
     if pathname == '/apps/reservoir_data_analys':
         return reservoir_data_analys.layout
+    if pathname == '/apps/reservoir_forecaster':
+        return reservoir_forecaster.layout
     else:
         return "404"
 
